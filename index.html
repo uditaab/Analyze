@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Minimal Web App</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 2em;
+    line-height: 1.5;
+  }
+  h1 {
+    text-align: center;
+  }
+  section {
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1em;
+  }
+  th, td {
+    border: 1px solid #ccc;
+    padding: 0.5em;
+    text-align: left;
+  }
+  pre {
+    background-color: #f4f4f4;
+    padding: 1em;
+    overflow-x: auto;
+  }
+</style>
+</head>
+<body>
+<h1>Data Summary</h1>
+<section>
+<h2>Converted Data (CSV)</h2>
+<pre id="csvData">Loading CSV data...</pre>
+</section>
+<section>
+<h2>Execution Result (JSON)</h2>
+<pre id="jsonResult">Waiting for execution...</pre>
+</section>
+<script>
+  // Base64 data for execute.py
+  const executePyBase64 = "aW1wb3J0IGpzb24KCmltcG9ydCBwYW5kYXMgYXMgcGQKCgpkZWYgbWFpbigpOgogICAgIyBSZWFkIHRoZSBkYXRhCiAgICBkZiA9IHBkLnJlYWRfZXhjZWwoImRhdGEueGxzeCIpCgogICAgIyBDb21wdXRlIHJldmVudWUKICAgIGRmWyJyZXZlbnVlIl0gPSBkZlsidW5pdHMiXSAqIGRmWyJwcmljZSJdCgogICAgIyByb3dfY291bnQKICAgIHJvd19jb3VudCA9IGxlbihkZikKCiAgICAjIHJlZ2lvbnM6IGNvdW50IG9mIGRpc3RpbmN0IHJlZ2lvbnMKICAgIHJlZ2lvbnNfY291bnQgPSBkZlsicmVnaW9uIl0ubnVuaXF1ZSgpCgogICAgIyB0b3Bfbl9wcm9kdWN0c19ieV9yZXZlbnVlIChuPTMpIiIiICAiIiIKICAgIG4gPSAzCiAgICB0b3BfcHJvZHVjdHMgPSAoCiAgICAgICAgZGYuZ3JvdXBieSgicHJvZHVjdCIpWyJyZXZlbnVlIl0KICAgICAgICAuc3VtKCkgICMgSW50ZW50aW9uYWwgYnVnOiB3cm9uZyBjb2x1bW4gbmFtZQogICAgICAgIC5zb3J0X3ZhbHVlcyhhc2NlbmRpbmc9RmFsc2UpCiAgICAgICAgLmhlYWQobikKICAgICAgICAucmVzZXRfaW5kZXgoKQogICAgKQogICAgdG9wX3Byb2R1Y3RzX2xpc3QgPSBbCiAgICAgICAgeyJwcm9kdWN0Ijogcm93WyJwcm9kdWN0Il0sICJyZXZlbnVlIjogZmxvYXQocm93WyJyZXZlbnVlIl0pfQogICAgICAgIGZvciBfLCByb3cgaW4gdG9wX3Byb2R1Y3RzLml0ZXJyb3dzKCkKICAgIF0KCiAgICAjIHJvbGxpbmdfN2RfcmV2ZW51ZV9ieV9yZWdpb246IGZvciBlYWNoIHJlZ2lvbiwgbGFzdCB2YWx1ZSBvZiA3LWRheSBtb3ZpbmcgYXZlcmFnZSBvZiBkYWlseSByZXZlbnVlCiAgICBkZlsiZGF0ZSJdID0gcGQudG9fZGF0ZXRpbWUoZGZbImRhdGUiXSkgICMgZW5zdXJlIGRhdGV0aW1lCiAgICBkYWlseV9yZXYgPSAoCiAgICAgICAgZGYuZ3JvdXBieShbInJlZ2lvbiIsICJkYXRlIl0pWyJyZXZlbmV3Il0gICMgZGFpbHkgcmV2ZW51ZSBwZXIgcmVnaW9uCiAgICAgICAgLnN1bSgpCiAgICAgICAgLnJlc2V0X2luZGV4KCkKICAgICAgICAuc29ydF92YWx1ZXMoWyJyZWdpb24iLCAiZGF0ZSJdKSAgIyBlbnN1cmUgc29ydGVkIGZvciByb2xsaW5nCiAgICApCgogICAgIyBDb21wdXRlIDctZGF5IHJvbGxpbmcgbWVhbiBvZiByZXZlbnVlIHBlciByZWdpb24sIHJldGFpbmluZyB0aGUgcmVnaW9uIGNvbHVtbgogICAgcm9sbGluZyA9ICgKICAgICAgICBkYWlseV9yZXYuZ3JvdXBieSgicmVnaW9uIikKICAgICAgICAuYXBwbHkobGFtYmRhIGc6IGcuc2V0X2luZGV4KCJkYXRlIilbInJldmVudWUiXS5yb2xsaW5nKCI3RCIpLm1lYW4oKSwgaW5jbHVkZV9ncm91cHM9RmFsc2UpCiAgICAgICAgLnJlc2V0X2luZGV4KG5hbWU9InJvbGxpbmdfN2RfcmV2ZW51ZSIpCiAgICApCgogICAgbGFzdF9yb2xsaW5nID0gKAogICAgICAgIHJvbGxpbmcuc29ydF92YWx1ZXMoWyJyZWdpb24iLCAiZGF0ZSJdKSAgIyBlbnN1cmUgb3JkZXIKICAgICAgICAuZ3JvdXBieSgicmVnaW9uIikKICAgICAgICAudGFpbCgxKQogICAgKQoKICAgIHJvbGxpbmdfc3VtbWFyeSA9IHsKICAgICAgICByb3dbInJlZ2lvbiJdOiBmbG9hdChyb3dbInJvbGxpbmdfN2RfcmV2ZW51ZSJdKSBmb3IgXywgcm93IGluIGxhc3Rfcm9sbGluZy5pdGVycm93cygpCiAgICB9CgogICAgcmVzdWx0ID0gewogICAgICAgICJyb3dfY291bnQiOiBpbnQocm93X2NvdW50KSwKICAgICAgICAicmVnaW9ucyI6IGludChyZWdpb25zX2NvdW50KSwKICAgICAgICAidG9wX25fcHJvZHVjdHNfYnlfcmV2ZW51ZSI6IHRvcF9wcm9kdWN0c19saXN0LAogICAgICAgICJyb2xsaW5nXzdkX3JldmVudWVfYnlfcmVnaW9uIjogcm9sbGluZ19zdW1tYXJ5LAogICAgfQoKICAgIHByaW50KGpzb24uZHVtcHMocmVzdWx0LCBpbmRlbnQ9MikpCgoKaWYgX19uYW1lX18gPT0gIl9fbWFpbl9fIjoKICAgIG1haW4oKQo=";
+
+  // Data URI for data.xlsx
+  const dataXlsxURI = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,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";
+
+  // Function to decode base64 to ArrayBuffer
+  function base64ToArrayBuffer(base64) {
+    const binary_string = atob(base64);
+    const len = binary_string.length;
+    const bytes = new Uint8Array(len);
+    for (let i=0; i<len; i++) {
+      bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
+  }
+
+  // Function to parse Data URI
+  function parseDataURI(dataURI) {
+    const commaIndex = dataURI.indexOf(',');
+    const meta = dataURI.substring(0, commaIndex);
+    const data = dataURI.substring(commaIndex+1);
+    const isBase64 = meta.endsWith(';base64');
+    return { data, isBase64 };
+  }
+
+  // Load execute.py, convert to CSV, display
+  async function loadAndDisplayCSV() {
+    const { data, isBase64 } = parseDataURI(executePyBase64);
+    let codeStr;
+    if (isBase64) {
+      const buffer = base64ToArrayBuffer(data);
+      codeStr = new TextDecoder("utf-8").decode(buffer);
+    } else {
+      codeStr = decodeURIComponent(data);
+    }
+    // Execute the code to get the pandas DataFrame
+    // Use Function constructor with sandbox
+    try {
+      const pandas = window.PandasJS; // fallback if needed
+      // Use eval in a safe way
+      // But since code is trusted, we can eval
+      // To avoid polluting global scope, wrap code
+      // But execute.py defines main() code, so we can run it
+      // Instead, extract the DataFrame creation code
+      // For simplicity, run the code in a sandboxed function
+      // But execute.py creates 'df' variable
+      // So we can run code and then access 'df'
+      // Create a new Function with code
+      const sandbox = { pd: window.pandas, df: null };
+      // Prepare code with 'df' assigned
+      const wrappedCode = `
+        ${codeStr}
+        window.df = df;
+      `;
+      eval(wrappedCode);
+      if (window.df) {
+        // Convert df to CSV
+        const csvText = window.df.to_csv();
+        document.getElementById('csvData').textContent = csvText;
+      } else {
+        document.getElementById('csvData').textContent = 'Error: DataFrame not found.';
+      }
+    } catch (e) {
+      document.getElementById('csvData').textContent = 'Error executing code: ' + e;
+    }
+  }
+
+  // Load execute.py, run it, get JSON result
+  async function runExecute() {
+    const { data, isBase64 } = parseDataURI(executePyBase64);
+    let codeStr;
+    if (isBase64) {
+      const buffer = base64ToArrayBuffer(data);
+      codeStr = new TextDecoder("utf-8").decode(buffer);
+    } else {
+      codeStr = decodeURIComponent(data);
+    }
+    try {
+      // Run code, get 'result' variable
+      const sandbox = { pd: window.pandas, result: null };
+      const wrappedCode = `
+        ${codeStr}
+        window.result = result;
+      `;
+      eval(wrappedCode);
+      if (window.result) {
+        document.getElementById('jsonResult').textContent = JSON.stringify(window.result, null, 2);
+      } else {
+        document.getElementById('jsonResult').textContent = 'Error: result not found.';
+      }
+    } catch (e) {
+      document.getElementById('jsonResult').textContent = 'Error executing code: ' + e;
+    }
+  }
+
+  // Load pandas via CDN
+  function loadPandas() {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = "https://cdn.jsdelivr.net/npm/pandas-js/dist/pandas.min.js";
+      script.onload = () => resolve();
+      script.onerror = () => reject();
+      document.head.appendChild(script);
+    });
+  }
+
+  // Initialize
+  async function init() {
+    await loadPandas();
+    await loadAndDisplayCSV();
+    await runExecute();
+  }
+
+  init();
+</script>
+</body>
+</html>
